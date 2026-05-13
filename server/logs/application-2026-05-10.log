@@ -1,0 +1,183 @@
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:20:01"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:20:01"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:20:01"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:20:01"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:20:18"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:20:18"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:20:18"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:20:18"}
+{"level":"info","message":"Shutting down gracefully...","timestamp":"2026-05-10 09:20:31"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:20:36"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:20:36"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:20:36"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:20:36"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:33:38"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:33:38"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:33:38"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:33:38"}
+{"level":"info","message":"Shutting down gracefully...","timestamp":"2026-05-10 09:33:54"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:36:53"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:36:53"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:36:53"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:36:53"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:37:03"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:37:03"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:37:03"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:37:03"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:37:30"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:37:30"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:37:30"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:37:30"}
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:37:46"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:39:47"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:39:47"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:39:47"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:39:47"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:39:49"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:39:49"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:39:49"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:39:49"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:41:12"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:41:12"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:41:12"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:41:12"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:41:21"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:41:21"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:41:21"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:41:21"}
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:41:45"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:48:51"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:48:51"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:48:51"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:48:51"}
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:48:59"}
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:54:06"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 09:55:38"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 09:55:38"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 09:55:38"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 09:55:38"}
+{"adminId":"cmozjg2tn0000xwd3v4q4qk6u","email":"olokoadesola1@gmail.com","level":"info","message":"Super Admin created","timestamp":"2026-05-10T08:56:05.214Z"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:02:09"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:02:09"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:02:09"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:02:09"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:02:14"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:02:14"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:02:14"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:02:14"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:02:17"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:02:17"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:02:17"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:02:17"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:06:03"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:06:03"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:06:03"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:06:03"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:06:19"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:06:19"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:06:19"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:06:19"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:06:31"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:06:31"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:06:31"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:06:31"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:06:55"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:06:55"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:06:55"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:06:55"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:07:13"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:07:13"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:07:13"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:07:13"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:12:45"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:12:45"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:12:45"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:12:45"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:17"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:17"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:17"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:17"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:31"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:31"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:31"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:31"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:35"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:35"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:35"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:35"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:42"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:42"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:42"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:42"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:44"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:44"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:44"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:44"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:46"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:46"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:46"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:46"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:47"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:47"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:47"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:47"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:51"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:51"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:51"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:51"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:13:58"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:13:58"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:13:58"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:13:58"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:14:03"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:14:03"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:14:03"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:14:03"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:14:24"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:14:24"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:14:24"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:14:24"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:14:26"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:14:26"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:14:26"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:14:26"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:14:35"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:14:35"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:14:35"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:14:35"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:14:42"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:14:42"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:14:42"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:14:42"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:15:29"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:15:29"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:15:29"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:15:29"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:15:45"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:15:45"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:15:45"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:15:45"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:15:59"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:15:59"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:15:59"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:15:59"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:16:08"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:16:08"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:16:08"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:16:08"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:16:09"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:16:09"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:16:09"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:16:09"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:30:55"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:30:55"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:30:55"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:30:55"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 10:31:09"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 10:31:09"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 10:31:09"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 10:31:09"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-05-10 14:29:40"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2026-05-10 14:29:40"}
+{"level":"info","message":"📝 Logs are being written to /logs directory","timestamp":"2026-05-10 14:29:40"}
+{"level":"info","message":"🔐 Super Admin setup: npm run create-super-admin","timestamp":"2026-05-10 14:29:40"}

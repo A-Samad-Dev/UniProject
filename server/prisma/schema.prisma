@@ -1,0 +1,437 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============== ENUMS ==============
+
+enum EntryMode {
+  utme
+  direct_entry
+}
+
+enum ExamType {
+  WAEC
+  NECO
+  NABTEB
+}
+
+enum Grade {
+  A1
+  B2
+  B3
+  C4
+  C5
+  C6
+  D7
+  E8
+  F9
+}
+
+enum ApplicantStatus {
+  draft
+  submitted
+  under_review
+  accepted
+  rejected
+  admitted
+}
+
+enum UserRole {
+  super_admin
+  admin
+  faculty_head
+  department_head
+  lecturer
+  student
+  applicant
+}
+
+enum Semester {
+  first
+  second
+}
+
+enum RegistrationStatus {
+  pending
+  approved
+}
+
+enum AccountStatus {
+  active
+  inactive
+  blocked
+  graduated
+}
+
+enum DirectEntryProgramme {
+  YEAR_200
+  YEAR_300
+}
+
+enum Qualification {
+  OND
+  NCE
+  HND
+ 
+}
+enum Permission {
+  // User management
+  create_user
+  edit_user
+  delete_user
+  view_users
+  
+  // Course management  
+  create_course
+  edit_course
+  delete_course
+  view_courses
+  
+  // Result management
+  upload_results
+  approve_results
+  view_results
+  
+  // Department/Faculty
+  manage_departments
+  manage_faculties
+  
+ 
+  view_logs
+  system_settings
+  all  // Super admin
+}
+
+
+// ============== USER MODEL ==============
+
+model User {
+  id                   String        @id @default(cuid())
+  nameTitle            String?
+  name                 String
+  email                String        @unique
+  password             String        
+  role                 UserRole
+  facultyId            String?
+  departmentId         String?
+  level                Int?
+  matricNumber         String?       @unique
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  phoneNumber          String        @unique
+
+  lastLoginIP          String?
+  accountStatus        AccountStatus @default(active)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  employeeId           String?       @unique 
+  specialization       String?                
+  hireDate             DateTime?              
+  permissions          Permission[]          
+  
+
+  // Relations
+  faculty           Faculty?           @relation(fields: [facultyId], references: [id])
+  department        Department?        @relation(fields: [departmentId], references: [id])
+  emergencyContacts EmergencyContact[]
+  taughtCourses     Course[]           @relation("CourseLecturers")
+  headOfCourses     Course[]           @relation("HeadLecturer")
+  departmentHeadOf  Department?        @relation("DepartmentHead")
+  facultyHeadOf     Faculty?           @relation("FacultyHead")
+  results           Result[]
+  registrations     Registration[]
+  scores            Score[]            @relation("LecturerScores")
+  applicant         Applicant?
+  courseLecturers   CourseLecturer[]
+
+  @@map("users")
+}
+
+model EmergencyContact {
+  id          String  @id @default(cuid())
+  userId      String
+  name        String?
+  relation    String?
+  email       String? @unique
+  phoneNumber String?
+  isPrimary   Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("emergency_contacts")
+}
+
+// ============== APPLICANT MODEL ==============
+
+model Applicant {
+  id          String    @id @default(cuid())
+  name        String
+  email       String    @unique
+  phoneNumber String    @unique
+  password    String
+  entryMode   EntryMode
+  studentId   String?   @unique
+ 
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Application Details
+  secondarySchoolName    String?
+  secondarySchoolYear    Int?
+  secondarySchoolAddress String?
+
+  jambRegistrationNumber String?
+  jambScore              Int?
+  jambSubjectCombination String[]
+  jambUploadUrl          String?
+
+  firstChoiceId  String
+  secondChoiceId String?
+  facultyId      String?
+  departmentId   String?
+
+  status          ApplicantStatus @default(draft)
+  submissionDate  DateTime?
+  reviewDate      DateTime?
+  rejectionReason String?
+
+  admissionLetterUrl         String?
+  admissionLetterGeneratedAt DateTime?
+
+  // Direct Entry Details
+  previousInstitution String?
+  qualification       Qualification?
+  yearOfGraduation    Int?
+  transcriptAvailable Boolean?
+  programme           DirectEntryProgramme?
+
+  // Relations
+  firstChoice       Course                      @relation("FirstChoice", fields: [firstChoiceId], references: [id])
+  secondChoice      Course?                     @relation("SecondChoice", fields: [secondChoiceId], references: [id])
+  faculty           Faculty?                    @relation(fields: [facultyId], references: [id])
+  department        Department?                 @relation(fields: [departmentId], references: [id])
+  student           User?                       @relation(fields: [studentId], references: [id])
+  oLevelResults     OLevelResult[]
+  emergencyContacts ApplicantEmergencyContact[]
+
+  @@map("applicants")
+}
+
+model ApplicantEmergencyContact {
+  id          String  @id @default(cuid())
+  applicantId String
+  name        String?
+  relation    String?
+  email       String? @unique
+  phoneNumber String?
+  isPrimary   Boolean @default(false)
+
+  applicant Applicant @relation(fields: [applicantId], references: [id])
+
+  @@map("applicant_emergency_contacts")
+}
+
+model OLevelResult {
+  id          String   @id @default(cuid())
+  applicantId String
+  examType    ExamType
+  examNumber  String
+  examYear    Int
+  uploadUrl   String?
+
+  applicant Applicant       @relation(fields: [applicantId], references: [id])
+  subjects  OLevelSubject[]
+
+  @@map("olevel_results")
+}
+
+model OLevelSubject {
+  id             String @id @default(cuid())
+  oLevelResultId String
+  name           String
+  grade          Grade
+
+  oLevelResult OLevelResult @relation(fields: [oLevelResultId], references: [id])
+
+  @@map("olevel_subjects")
+}
+
+// ============== COUNTER MODEL ==============
+
+model Counter {
+  id          String   @id @default(cuid())
+  facultyCode String
+  year        Int
+  count       Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([facultyCode, year])
+  @@map("counters")
+}
+
+// ============== FACULTY MODEL ==============
+
+model Faculty {
+  id            String  @id @default(cuid())
+  name          String  @unique
+  code          String  @unique
+  facultyHeadId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  facultyHead User?        @relation("FacultyHead", fields: [facultyHeadId], references: [id])
+  departments Department[]
+  courses     Course[]
+  applicants  Applicant[]
+  users       User[]
+
+  @@map("faculties")
+}
+
+// ============== DEPARTMENT MODEL ==============
+
+model Department {
+  id               String  @id @default(cuid())
+  name             String
+  code             String
+  facultyId        String
+  departmentHeadId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  faculty        Faculty     @relation(fields: [facultyId], references: [id])
+  departmentHead User?       @relation("DepartmentHead", fields: [departmentHeadId], references: [id])
+  courses        Course[]
+  users          User[]
+  applicants     Applicant[]
+
+  @@unique([code, facultyId])
+  @@map("departments")
+}
+
+// ============== COURSE MODEL ==============
+
+model Course {
+  id             String   @id @default(cuid())
+  title          String
+  code           String   @unique
+  unit           Int
+  level          Int
+  semester       Semester
+  departmentId   String?
+  headLecturerId String?
+  facultyId      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  department             Department?        @relation(fields: [departmentId], references: [id])
+  faculty                Faculty?           @relation(fields: [facultyId], references: [id])
+  headLecturer           User?              @relation("HeadLecturer", fields: [headLecturerId], references: [id])
+  lecturers              User[]             @relation("CourseLecturers")
+  registrations          Registration[]
+  results                Result[]
+  firstChoiceApplicants  Applicant[]        @relation("FirstChoice")
+  secondChoiceApplicants Applicant[]        @relation("SecondChoice")
+  registeredCourses      RegisteredCourse[]
+  courseLecturers        CourseLecturer[]
+
+  @@map("courses")
+}
+
+// ============== REGISTRATION MODEL ==============
+
+model Registration {
+  id        String             @id @default(cuid())
+  studentId String
+  session   String
+  semester  Semester
+  status    RegistrationStatus @default(pending)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  // Relations
+  student  User               @relation(fields: [studentId], references: [id])
+  courses  RegisteredCourse[]
+  course   Course?            @relation(fields: [courseId], references: [id])
+  courseId String?
+
+  @@unique([studentId, session, semester])
+  @@map("registrations")
+}
+
+model RegisteredCourse {
+  id             String @id @default(cuid())
+  registrationId String
+  courseId       String
+
+  registration Registration @relation(fields: [registrationId], references: [id])
+  course       Course       @relation(fields: [courseId], references: [id])
+
+  @@unique([registrationId, courseId])
+  @@map("registered_courses")
+}
+
+// ============== RESULT MODEL ==============
+
+model Result {
+  id         String   @id @default(cuid())
+  studentId  String
+  courseId   String
+  totalScore Float?
+  grade      String?
+  approved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  student User    @relation(fields: [studentId], references: [id])
+  course  Course  @relation(fields: [courseId], references: [id])
+  scores  Score[]
+
+  @@unique([studentId, courseId])
+  @@map("results")
+}
+
+model Score {
+  id         String @id @default(cuid())
+  resultId   String
+  lecturerId String
+  score      Float
+
+  result   Result @relation(fields: [resultId], references: [id])
+  lecturer User   @relation("LecturerScores", fields: [lecturerId], references: [id])
+
+  @@map("scores")
+}
+
+// ============== COURSE LECTURER JUNCTION ==============
+
+model CourseLecturer {
+  id         String @id @default(cuid())
+  courseId   String
+  lecturerId String
+
+  course   Course @relation(fields: [courseId], references: [id])
+  lecturer User   @relation(fields: [lecturerId], references: [id])
+
+  @@unique([courseId, lecturerId])
+  @@map("course_lecturers")
+}

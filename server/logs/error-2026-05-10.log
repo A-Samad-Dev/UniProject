@@ -1,0 +1,4 @@
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:37:46"}
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:41:45"}
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:48:59"}
+{"error":"SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","level":"error","message":"Failed to create Super Admin","timestamp":"2026-05-10 09:54:06"}
