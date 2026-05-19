@@ -88,7 +88,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
           <Link href="/" className="flex items-center space-x-2">
             <GraduationCap className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-            <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">UniSystem</span>
+            <span className="text-xl font-bold bg-linear-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">UniSystem</span>
           </Link>
           <button onClick={onClose} className="lg:hidden p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
             <X className="w-5 h-5" />
