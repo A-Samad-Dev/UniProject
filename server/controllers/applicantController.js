@@ -6,6 +6,23 @@ const { generateMatric } = require("../services/matricServices");
 exports.registerApplicant = async (req, res) => {
   try {
     const { name, email, phoneNumber, password, entryMode } = req.body;
+    if (!name || !email || !phoneNumber || !password || !entryMode) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Missing required fields: name, email, phoneNumber, password, entryMode",
+      });
+    }
+
+    // Validate entry mode
+    if (!["UTME", "DIRECT_ENTRY"].includes(entryMode)) {
+      logger.warn("invalid entryMode");
+
+      return res.status(400).json({
+        success: false,
+        message: "Invalid entry mode. Must be UTME or DIRECT_ENTRY",
+      });
+    }
 
     const existingApplicant = await prisma.applicant.findFirst({
       where: {

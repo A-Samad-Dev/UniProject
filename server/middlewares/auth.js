@@ -43,7 +43,7 @@ exports.verifyToken = async (req, res, next) => {
     // }
     // remember to uncomment from line 32
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // remember to remove the default later on !
 
     // Find user by ID and exclude password field
