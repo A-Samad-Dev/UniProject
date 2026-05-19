@@ -58,7 +58,7 @@ export default function StudentCoursesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => (
           <div key={course.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-4">
+            <div className="bg-linear-to-r from-indigo-500 to-purple-500 p-4">
               <h3 className="text-lg font-semibold text-white">{course.title}</h3>
               <p className="text-white/80 text-sm">{course.code}</p>
             </div>

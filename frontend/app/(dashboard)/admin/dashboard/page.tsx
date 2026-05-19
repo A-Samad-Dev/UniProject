@@ -123,7 +123,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
+      <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
         <h1 className="text-2xl sm:text-3xl font-bold">
           Welcome, {user?.name?.split(" ")[0]}! 👋
         </h1>

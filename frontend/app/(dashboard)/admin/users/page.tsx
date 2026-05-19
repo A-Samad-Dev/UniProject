@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api/client";
-import { Search, Filter, MoreVertical, UserPlus, Edit, Trash2, Eye } from "lucide-react";
+import {
+  Search,
+  Filter,
+  MoreVertical,
+  UserPlus,
+  Edit,
+  Trash2,
+  Eye,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 interface User {
@@ -32,7 +40,7 @@ export default function AdminUsersPage() {
         apiClient.getAllStudents(),
         apiClient.getAllLecturers(),
       ]);
-      
+
       const allUsers = [
         ...(students.data || []).map((u: any) => ({ ...u, role: "student" })),
         ...(lecturers.data || []).map((u: any) => ({ ...u, role: "lecturer" })),
@@ -45,19 +53,24 @@ export default function AdminUsersPage() {
     }
   };
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = filterRole === "all" || user.role === filterRole;
     return matchesSearch && matchesRole;
   });
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case "admin": return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
-      case "lecturer": return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
-      case "student": return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-      default: return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
+      case "admin":
+        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+      case "lecturer":
+        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+      case "student":
+        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+      default:
+        return "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
     }
   };
 
@@ -66,8 +79,12 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage all users in the system</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            User Management
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Manage all users in the system
+          </p>
         </div>
         <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2">
           <UserPlus className="w-4 h-4" />
@@ -108,30 +125,51 @@ export default function AdminUsersPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">User</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Role</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contact</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Joined</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  User
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Role
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Contact
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Joined
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                <tr
+                  key={user.id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                      <div className="w-10 h-10 bg-linear-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
                         {user.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          {user.name}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {user.email}
+                        </p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}
+                    >
                       {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     </span>
                   </td>
@@ -139,11 +177,13 @@ export default function AdminUsersPage() {
                     {user.phoneNumber || "N/A"}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      user.accountStatus === "active" 
-                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                        : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        user.accountStatus === "active"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                          : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                      }`}
+                    >
                       {user.accountStatus}
                     </span>
                   </td>

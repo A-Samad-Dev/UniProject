@@ -108,7 +108,7 @@ export default function StudentDashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
+      <div className="bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
         <h1 className="text-2xl sm:text-3xl font-bold">
           Welcome back, {user?.name?.split(" ")[0]}! 🎓
         </h1>
@@ -224,7 +224,7 @@ export default function StudentDashboard() {
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
-                  className="bg-gradient-to-r from-indigo-500 to-indigo-600 h-2 rounded-full transition-all duration-500"
+                  className="bg-linear-to-r from-indigo-500 to-indigo-600 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${course.progress}%` }}
                 />
               </div>
