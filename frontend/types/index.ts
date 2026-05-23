@@ -42,24 +42,42 @@ export interface ApplicantRegistrationData {
   yearOfGraduation?: number;
 }
 
+export interface Faculty {
+  id: string;
+  name: string;
+  code: string;
+  facultyHeadId?: string;
+  facultyHead?: User;
+  departments?: Department[];
+  createdAt: string;
+}
+
+
 export interface Department {
   id: string;
   name: string;
   code: string;
-  headId: string;
-  faculty: string[];
-  students: string[];
-  budget: number;
+  facultyId: string;
+  faculty?: Faculty;
+  departmentHeadId?: string;
+  departmentHead?: User;
+  courses?: Course[];
+  createdAt: string;
 }
 
 export interface Course {
   id: string;
   code: string;
-  name: string;
-  credits: number;
-  department: string;
-  instructor: string;
-  students: string[];
-  schedule: string;
+  title: string;
+  unit: number;
+  level: number;
   semester: string;
+  departmentId: string;
+  facultyId: string;
+  headLecturerId?: string;
+  schedule?: string;
+  department?: Department;
+  faculty?: Faculty;
+  headLecturer?: User;
+  createdAt: string;
 }

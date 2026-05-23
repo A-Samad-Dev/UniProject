@@ -19,6 +19,26 @@
             "date": 1779148455079,
             "name": "logs\\exceptions-2026-05-19.log",
             "hash": "c6d71fecccc6ab590edf29016791a0a02475d54d62365a4cd7ed52822a71d2ab"
+        },
+        {
+            "date": 1779302882798,
+            "name": "logs\\exceptions-2026-05-20.log",
+            "hash": "eecc457dfeac401630f40b6a9c6dcab643bba5931a8952ac07cf34a8f51a817d"
+        },
+        {
+            "date": 1779435155411,
+            "name": "logs\\exceptions-2026-05-22.log",
+            "hash": "b5dabb18c0e4fe1419013498ec8ca87ab3f96f48d022de14dc4f3c31ef0a6534"
+        },
+        {
+            "date": 1779509561587,
+            "name": "logs\\exceptions-2026-05-23.log",
+            "hash": "167b54821cf72c5397941a4b2a1439ae547e0a49233f5214b2dd006830528396"
+        },
+        {
+            "date": 1779577234223,
+            "name": "logs\\exceptions-2026-05-24.log",
+            "hash": "165478cd004837725b15a75e77d67bc80fcffd909bcd9dde8dc3d9a068763e07"
         }
     ],
     "hashType": "sha256"

@@ -33,73 +33,82 @@ exports.login = async (req, res) => {
       });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
+    const cleanEmail = email.toLowerCase().trim();
+    let account = null;
+    let roleType = null;
+    let fallbackToApplicant = false;
+
+    account = await prisma.user.findUnique({
+      where: { email: cleanEmail },
       include: {
-        faculty: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-          },
-        },
-        department: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-          },
-        },
+        faculty: { select: { id: true, name: true, code: true } },
+        department: { select: { id: true, name: true, code: true } },
       },
     });
 
-    if (!user) {
+    if (account) {
+      roleType = account.role;
+    } else {
+      account = await prisma.applicant.findUnique({
+        where: { email: cleanEmail },
+        include: {
+          faculty: { select: { id: true, name: true, code: true } },
+          department: { select: { id: true, name: true, code: true } },
+        },
+      });
+
+      if (account) {
+        roleType = "applicant";
+        fallbackToApplicant = true;
+      }
+    }
+
+    if (!account) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
     }
 
-    // Check account status
-    if (user.accountStatus === "blocked" || user.accountStatus === "inactive") {
+    if (
+      !fallbackToApplicant &&
+      (account.accountStatus === "blocked" ||
+        account.accountStatus === "inactive")
+    ) {
       return res.status(403).json({
         success: false,
         message: "Account is not active, please contact administration.",
       });
     }
 
-    console.log("Login attempt for email:", email);
-
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(`Login attempt for ${roleType}:`, cleanEmail);
+    const isMatch = await bcrypt.compare(password, account.password);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
       });
     }
-
-    // Update last login
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        updatedAt: new Date(),
-        lastLoginIP: req.ip || user.lastLoginIP,
-      },
-    });
-
-    // Generate token
-    const token = generateToken(user.id, user.role, user.email);
-
+    if (!fallbackToApplicant) {
+      await prisma.user.update({
+        where: { id: account.id },
+        data: {
+          updatedAt: new Date(),
+          lastLoginIP: req.ip || account.lastLoginIP,
+        },
+      });
+    }
+    const token = generateToken(account.id, roleType, account.email);
     const userData = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      matricNumber: user.matricNumber,
-      phoneNumber: user.phoneNumber,
-      faculty: user.faculty,
-      department: user.department,
+      id: account.id,
+      name: account.name,
+      email: account.email,
+      program: account.program,
+      role: roleType,
+      matricNumber: account.matricNumber || null,
+      phoneNumber: account.phoneNumber,
+      faculty: account.faculty,
+      department: account.department,
     };
 
     res.json({
@@ -119,6 +128,7 @@ exports.login = async (req, res) => {
 };
 
 // Change password
+
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -318,59 +328,18 @@ exports.resetPassword = async (req, res) => {
 // Get current user profile
 exports.getMe = async (req, res) => {
   try {
-    const userId = req.user.id;
-
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        nameTitle: true,
-        email: true,
-        role: true,
-        matricNumber: true,
-        phoneNumber: true,
-        level: true,
-        accountStatus: true,
-        lastLoginIP: true,
-        createdAt: true,
-        updatedAt: true,
-        faculty: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-          },
-        },
-        department: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-          },
-        },
-        emergencyContacts: {
-          select: {
-            id: true,
-            name: true,
-            relation: true,
-            phoneNumber: true,
-            isPrimary: true,
-          },
-        },
-      },
-    });
-
-    if (!user) {
+    //  The verifyToken middleware already handled the table queries and relations!
+    if (!req.user) {
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
-
-    res.json({
+    res.status(200).json({
       success: true,
-      data: { user },
+      data: {
+        user: req.user,
+      },
     });
   } catch (error) {
     console.error("Get profile error:", error);
@@ -426,4 +395,65 @@ exports.logout = async (req, res) => {
     success: true,
     message: "Logged out successfully",
   });
+};
+
+exports.getPublicCourses = async (req, res) => {
+  try {
+    const { program } = req.query;
+
+    const filter = {};
+    if (program) filter.program = program;
+
+    const courses = await prisma.course.findMany({
+      where: filter,
+      select: {
+        id: true,
+        title: true,
+        code: true,
+        program: true,
+      },
+      orderBy: { title: "asc" },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: courses,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// controllers/departmentController.js
+exports.getPublicDepartmentsWithPrograms = async (req, res) => {
+  try {
+    const { program } = req.query; 
+
+    const departments = await prisma.department.findMany({
+      select: {
+        id: true,
+        name: true,
+        code: true, // e.g., "ECO"
+        courses: {
+          where: program ? { program } : {}, // Filter degree paths inside the department
+          select: {
+            id: true,
+            title: true, // e.g., "B.Sc. Economics"
+            program: true,
+          },
+        },
+      },
+      orderBy: { name: "asc" },
+    });
+    const activeDepartments = departments.filter(
+      (dept) => dept.courses.length > 0,
+    );
+
+    res.status(200).json({
+      success: true,
+      data: activeDepartments,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };

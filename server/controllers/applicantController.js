@@ -2,20 +2,47 @@
 const prisma = require("../lib/prisma");
 const bcrypt = require("bcryptjs");
 const { generateMatric } = require("../services/matricServices");
+const { logger } = require("../src/config/logger");
 
 exports.registerApplicant = async (req, res) => {
   try {
-    const { name, email, phoneNumber, password, entryMode } = req.body;
-    if (!name || !email || !phoneNumber || !password || !entryMode) {
+    const {
+      name,
+      email,
+      phoneNumber,
+      password,
+      entryMode,
+      program,
+      firstChoiceId,
+    } = req.body;
+
+    if (
+      !name ||
+      !email ||
+      !phoneNumber ||
+      !password ||
+      !entryMode ||
+      !program ||
+      !firstChoiceId
+    ) {
       return res.status(400).json({
         success: false,
         message:
-          "Missing required fields: name, email, phoneNumber, password, entryMode",
+          "Missing required fields: name, email, phoneNumber, password, entryMode, program, firstChoiceId",
       });
+    }
+    const chosenCourse = await prisma.course.findUnique({
+      where: { id: firstChoiceId },
+      select: { departmentId: true, facultyId: true },
+    });
+    if (!chosenCourse) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Selected course does not exist." });
     }
 
     // Validate entry mode
-    if (!["UTME", "DIRECT_ENTRY"].includes(entryMode)) {
+    if (!["utme", "direct_entry"].includes(entryMode.toLowerCase())) {
       logger.warn("invalid entryMode");
 
       return res.status(400).json({
@@ -44,10 +71,20 @@ exports.registerApplicant = async (req, res) => {
         name,
         email,
         phoneNumber,
-        entryMode,
+        entryMode: entryMode.toLowerCase(),
+        program,
+        firstChoice: { connect: { id: firstChoiceId } },
         password: hashedPassword,
-        role: "applicant",
         status: "draft",
+        department: chosenCourse.departmentId
+          ? { connect: { id: chosenCourse.departmentId } }
+          : undefined,
+        faculty: chosenCourse.facultyId
+          ? { connect: { id: chosenCourse.facultyId } }
+          : undefined,
+        emergencyContacts: {
+          create: req.body.emergencyContacts,
+        },
       },
       select: {
         id: true,
@@ -79,6 +116,16 @@ exports.submitApplication = async (req, res) => {
     const { id } = req.params;
     const { secondarySchool, oLevelResults, jamb, firstChoice, secondChoice } =
       req.body;
+    if (
+      !firstChoice ||
+      typeof firstChoice !== "string" ||
+      firstChoice.trim() === ""
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "A valid first choice course ID is required.",
+      });
+    }
 
     // Check if applicant exists
     const applicant = await prisma.applicant.findUnique({
@@ -105,28 +152,37 @@ exports.submitApplication = async (req, res) => {
     if (!firstChoiceCourse) {
       return res.status(400).json({ message: "Invalid first choice course" });
     }
+    let verifiedSecondChoiceId = null;
+    if (
+      secondChoice &&
+      typeof secondChoice === "string" &&
+      secondChoice.trim() !== ""
+    ) {
+      const secondChoiceCourse = await prisma.course.findUnique({
+        where: { id: secondChoice },
+      });
+      if (!secondChoiceCourse) {
+        return res.status(400).json({
+          success: false,
+          message: "The selected second choice course does not exist.",
+        });
+      }
+      verifiedSecondChoiceId = secondChoice;
+    }
 
     // Create O-Level results with subjects
-    const oLevelResultsData = [];
-    if (oLevelResults && oLevelResults.length > 0) {
-      for (const result of oLevelResults) {
-        const oLevelResult = await prisma.oLevelResult.create({
-          data: {
-            examType: result.examType,
-            examNumber: result.examNumber,
-            examYear: result.examYear,
-            uploadUrl: result.uploadUrl,
-            subjects: {
-              create: result.subjects.map((subject) => ({
-                name: subject.name,
-                grade: subject.grade,
-              })),
-            },
-          },
-        });
-        oLevelResultsData.push({ id: oLevelResult.id });
-      }
-    }
+    const oLevelResultsCreateData = (oLevelResults || []).map((result) => ({
+      examType: result.examType,
+      examNumber: result.examNumber || "",
+      examYear: Number(result.examYear) || new Date().getFullYear(),
+      uploadUrl: result.uploadUrl || null,
+      subjects: {
+        create: (result.subjects || []).map((subject) => ({
+          name: subject.name,
+          grade: subject.grade,
+        })),
+      },
+    }));
 
     // Update applicant with application details
     const updatedApplicant = await prisma.applicant.update({
@@ -142,7 +198,7 @@ exports.submitApplication = async (req, res) => {
         jambUploadUrl: jamb?.uploadUrl,
 
         firstChoiceId: firstChoice,
-        secondChoiceId: secondChoice || null,
+        secondChoiceId: verifiedSecondChoiceId || null,
         facultyId: firstChoiceCourse.facultyId,
         departmentId: firstChoiceCourse.departmentId,
 
@@ -150,7 +206,7 @@ exports.submitApplication = async (req, res) => {
         submissionDate: new Date(),
 
         oLevelResults: {
-          connect: oLevelResultsData,
+          create: oLevelResultsCreateData,
         },
       },
       include: {
@@ -171,13 +227,13 @@ exports.submitApplication = async (req, res) => {
       message: "Application submitted successfully",
       data: {
         id: updatedApplicant.id,
-        name: updatedApplicant.name,
+        name: applicant.name,
         firstChoice: updatedApplicant.firstChoice?.title,
         status: updatedApplicant.status,
       },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -192,9 +248,12 @@ exports.getApplicationStatus = async (req, res) => {
         id: true,
         name: true,
         email: true,
+        phoneNumber: true,
         status: true,
+        program: true,
         submissionDate: true,
         rejectionReason: true,
+        entryMode: true,
         firstChoice: {
           select: {
             id: true,
@@ -213,12 +272,14 @@ exports.getApplicationStatus = async (req, res) => {
           select: {
             id: true,
             name: true,
+            code: true,
           },
         },
         department: {
           select: {
             id: true,
             name: true,
+            code: true,
           },
         },
       },
@@ -233,7 +294,11 @@ exports.getApplicationStatus = async (req, res) => {
       data: {
         name: applicant.name,
         email: applicant.email,
-        applicationStatus: applicant.status,
+        phoneNumber: applicant.phoneNumber,
+        status: applicant.status,
+        entryMode: applicant.entryMode,
+        department: applicant.department,
+        program: applicant.program,
         submissionDate: applicant.submissionDate,
         firstChoice: applicant.firstChoice,
         secondChoice: applicant.secondChoice,
@@ -248,7 +313,7 @@ exports.getApplicationStatus = async (req, res) => {
 // Admin: Get all applicants
 exports.getAllApplicants = async (req, res) => {
   try {
-    const { status } = req.query; // Filter by status (submitted, under_review, etc.)
+    const { status } = req.query;
 
     const where = {};
     if (status) where.status = status;
@@ -258,6 +323,7 @@ exports.getAllApplicants = async (req, res) => {
       include: {
         firstChoice: {
           select: {
+            department: true,
             id: true,
             title: true,
             code: true,
@@ -265,12 +331,28 @@ exports.getAllApplicants = async (req, res) => {
         },
         secondChoice: {
           select: {
+            department: true,
             id: true,
             title: true,
             code: true,
           },
         },
+        faculty: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+          },
+        },
+        department: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+          },
+        },
       },
+
       orderBy: {
         createdAt: "desc",
       },
@@ -282,7 +364,7 @@ exports.getAllApplicants = async (req, res) => {
       data: applicants,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -349,18 +431,26 @@ exports.getSingleApplicant = async (req, res) => {
   }
 };
 
-// Admin: Review and decide on application
 exports.reviewApplication = async (req, res) => {
   try {
     const { id } = req.params;
-    const { decision, rejectionReason, remarks } = req.body;
+    const { decision, status, rejectionReason, remarks } = req.body;
 
     const applicant = await prisma.applicant.findUnique({
       where: { id },
       include: {
         faculty: true,
         department: true,
-        firstChoice: true,
+        firstChoice: {
+          include: {
+            department: true,
+          },
+        },
+        secondChoice: {
+          include: {
+            department: true,
+          },
+        },
       },
     });
 
@@ -368,18 +458,29 @@ exports.reviewApplication = async (req, res) => {
       return res.status(404).json({ message: "Applicant not found" });
     }
 
-    if (applicant.status !== "submitted") {
-      return res.status(400).json({
-        message: `Cannot review application with status: ${applicant.status}`,
-      });
-    }
+    let updatedApplicant;
 
-    if (decision === "accept") {
+    if (decision === "accept" && status === "accepted") {
       // Generate matric number
-      const facultyCode = applicant.faculty?.code || "GEN";
-      const matricNumber = await generateMatric(facultyCode);
+      const targetFacultyId =
+        applicant.facultyId ||
+        applicant.firstChoice?.facultyId ||
+        applicant.firstChoice?.department?.facultyId;
+      let finalFacultyId = targetFacultyId;
+      if (!finalFacultyId) {
+        const fallbackFaculty = await prisma.faculty.findFirst();
+        if (!fallbackFaculty) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Admission failed: No faculties exist in the system database. Please seed your Faculty table.",
+          });
+        }
+        finalFacultyId = fallbackFaculty.id;
+      }
+      const matricNumber = await generateMatric(finalFacultyId);
 
-      // Generate temporary password (they can reset later)
+      // Generate temporary password
       const tempPassword = Math.random().toString(36).slice(-8);
       const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
@@ -393,24 +494,20 @@ exports.reviewApplication = async (req, res) => {
           role: "student",
           facultyId: applicant.facultyId,
           departmentId: applicant.departmentId,
-          level: 100, // Fresh students start at 100 level
+          level: 100,
           matricNumber: matricNumber,
           accountStatus: "active",
         },
       });
 
-      // Update applicant
-      const updatedApplicant = await prisma.applicant.update({
+      updatedApplicant = await prisma.applicant.update({
         where: { id },
         data: {
           status: "admitted",
           reviewDate: new Date(),
-          remarks: remarks,
           studentId: student.id,
         },
       });
-
-      // TODO: Send email to applicant with admission letter and login details
 
       res.json({
         success: true,
@@ -421,17 +518,13 @@ exports.reviewApplication = async (req, res) => {
             name: student.name,
             email: student.email,
             matricNumber: student.matricNumber,
-            tempPassword: tempPassword, // Only shown once
+            tempPassword: tempPassword,
           },
-          applicant: {
-            id: updatedApplicant.id,
-            status: "admitted",
-          },
+          applicant: updatedApplicant,
         },
       });
     } else if (decision === "reject") {
-      // Reject application
-      const updatedApplicant = await prisma.applicant.update({
+      updatedApplicant = await prisma.applicant.update({
         where: { id },
         data: {
           status: "rejected",
@@ -440,32 +533,45 @@ exports.reviewApplication = async (req, res) => {
         },
       });
 
-      // TODO: Send rejection email to applicant
-
       res.json({
         success: true,
         message: "Application rejected",
-        data: {
-          id: updatedApplicant.id,
-          status: "rejected",
-          reason: rejectionReason,
-        },
+        data: updatedApplicant,
       });
-    } else {
-      // Mark as under review
-      const updatedApplicant = await prisma.applicant.update({
+    } else if (decision === "under_review") {
+      updatedApplicant = await prisma.applicant.update({
         where: { id },
         data: {
           status: "under_review",
+          reviewDate: new Date(),
         },
       });
 
       res.json({
         success: true,
         message: "Application marked as under review",
+        data: updatedApplicant,
       });
+    } else if (decision === "reset") {
+      updatedApplicant = await prisma.applicant.update({
+        where: { id },
+        data: {
+          status: "submitted",
+          rejectionReason: null,
+          reviewDate: null,
+        },
+      });
+
+      res.json({
+        success: true,
+        message: "Application reset to submitted",
+        data: updatedApplicant,
+      });
+    } else {
+      res.status(400).json({ message: "Invalid decision" });
     }
   } catch (error) {
+    console.error("Review error:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -481,8 +587,6 @@ exports.getAdmissionStats = async (req, res) => {
     });
 
     const total = await prisma.applicant.count();
-
-    // Format stats to match original structure
     const formattedStats = stats.map((stat) => ({
       _id: stat.status,
       count: stat._count.status,

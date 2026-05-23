@@ -29,6 +29,8 @@ const PORT = process.env.PORT;
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/applicants", require("./routes/applicantRoute"));
 
+
+
 // PROTECTED ROUTES
 
 app.use("/api/admin", require("./routes/adminRoutes"));

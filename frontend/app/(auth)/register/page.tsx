@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { apiClient } from "@/lib/api/client";
 
 const getNestedError = (errors: any, path: string): string | undefined => {
   const parts = path.split(".");
@@ -96,6 +97,27 @@ interface RegisterFormValues {
   confirmPassword: string;
   entryMode: "UTME" | "DIRECT_ENTRY";
   agreeToTerms: boolean;
+  program: "BSC" | "MSC" | "PHD" | "DIPLOMA" | "";
+  firstChoiceId: string;
+  departmentId: string;
+}
+interface PublicCourseDropdownItem {
+  id: string;
+  title: string;
+  code: string;
+  program: "BSC" | "MSC" | "PHD" | "DIPLOMA";
+}
+
+interface PublicProgram {
+  id: string;
+  title: string;
+  program: string;
+}
+interface PublicDepartment {
+  id: string;
+  name: string;
+  code: string;
+  courses: PublicProgram[];
 }
 
 export default function RegisterPage() {
@@ -103,6 +125,11 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [departmentsData, setDepartmentsData] = useState<PublicDepartment[]>(
+    [],
+  );
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<string>("");
+
   const router = useRouter();
 
   const formik = useFormik<RegisterFormValues>({
@@ -114,6 +141,9 @@ export default function RegisterPage() {
       confirmPassword: "",
       entryMode: "UTME",
       agreeToTerms: false,
+      program: "",
+      departmentId: "",
+      firstChoiceId: "",
     },
     validationSchema: registerSchema,
     onSubmit: async (values, { setSubmitting }) => {
@@ -125,6 +155,8 @@ export default function RegisterPage() {
           phoneNumber: values.phoneNumber,
           password: values.password,
           entryMode: values.entryMode,
+          program: values.program,
+          firstChoiceId: values.firstChoiceId,
         };
 
         await register(applicantData);
@@ -140,6 +172,24 @@ export default function RegisterPage() {
       }
     },
   });
+
+  useEffect(() => {
+    if (formik.values.program) {
+      apiClient.getPublicDepartments(formik.values.program).then((res) => {
+        if (res.success) setDepartmentsData(res.data);
+      });
+    } else {
+      setDepartmentsData([]);
+    }
+    setSelectedDepartmentId("");
+    formik.setFieldValue("firstChoiceId", "");
+  }, [formik.values.program]);
+  // 1. Fetch departments when the Degree level (BSC/MSC/PHD) changes
+
+  const activeDepartment = departmentsData.find(
+    (d) => d.id === selectedDepartmentId,
+  );
+  const availablePrograms = activeDepartment ? activeDepartment.courses : [];
 
   const nextStep = () => {
     // Validate first step fields
@@ -400,7 +450,7 @@ export default function RegisterPage() {
             {currentStep === 3 && (
               <div className="space-y-5 animate-slideIn">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                  Entry Mode Selection
+                  Mode Selection
                 </h2>
 
                 {/* Entry Mode Selection */}
@@ -447,6 +497,64 @@ export default function RegisterPage() {
                     </button>
                   </div>
                 </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">
+                    Degree Program Level
+                  </label>
+                  <select
+                    name="program"
+                    value={formik.values.program}
+                    onChange={formik.handleChange}
+                    className="w-full border p-2 rounded text-sm mt-1"
+                  >
+                    <option value="">-- Choose Track --</option>
+                    <option value="BSC">Undergraduate (B.Sc.)</option>
+                    <option value="MSC">Masters (M.Sc.)</option>
+                    <option value="PHD">Doctorate (Ph.D.)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-700">
+                    Academic Department
+                  </label>
+                  <select
+                    value={selectedDepartmentId}
+                    onChange={(e) => {
+                      setSelectedDepartmentId(e.target.value);
+                      formik.setFieldValue("firstChoiceId", ""); 
+                    }}
+                    disabled={!formik.values.program}
+                    className="w-full border p-2 rounded text-sm mt-1 disabled:bg-gray-100"
+                  >
+                    <option value="">-- Choose Department --</option>
+                    {departmentsData.map((dept) => (
+                      <option key={dept.id} value={dept.id}>
+                        [{dept.code}] {dept.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">
+                    Course of Study Choice
+                  </label>
+                  <select
+                    name="firstChoiceId"
+                    value={formik.values.firstChoiceId}
+                    onChange={formik.handleChange}
+                    disabled={!selectedDepartmentId}
+                    className="w-full border p-2 rounded text-sm mt-1 disabled:bg-gray-100"
+                  >
+                    <option value="">-- Select Specific Major Focus --</option>
+                    {availablePrograms.map((prog) => (
+                      <option key={prog.id} value={prog.id}>
+                        {prog.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Terms Agreement */}
                 <div className="flex items-center gap-3 pt-4">
                   <input

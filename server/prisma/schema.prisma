@@ -38,6 +38,13 @@ enum Grade {
   F9
 }
 
+enum ProgramType {
+  BSC
+  MSC
+  PHD
+  DIPLOMA
+}
+
 enum ApplicantStatus {
   draft
   submitted
@@ -62,6 +69,12 @@ enum Semester {
   second
 }
 
+enum Gender {
+  male
+  female
+  null
+}
+
 enum RegistrationStatus {
   pending
   approved
@@ -83,63 +96,62 @@ enum Qualification {
   OND
   NCE
   HND
- 
 }
+
 enum Permission {
   // User management
   create_user
   edit_user
   delete_user
   view_users
-  
+
   // Course management  
   create_course
   edit_course
   delete_course
   view_courses
-  
+
   // Result management
   upload_results
   approve_results
   view_results
-  
+
   // Department/Faculty
   manage_departments
   manage_faculties
-  
- 
+
   view_logs
   system_settings
-  all  // Super admin
+  all // Super admin
 }
-
 
 // ============== USER MODEL ==============
 
 model User {
-  id                   String        @id @default(cuid())
+  id                   String       @id @default(cuid())
   nameTitle            String?
   name                 String
-  email                String        @unique
-  password             String        
+  email                String       @unique
+  gender               Gender       @default(null)
+  password             String
   role                 UserRole
+  program              ProgramType?
   facultyId            String?
   departmentId         String?
   level                Int?
-  matricNumber         String?       @unique
+  matricNumber         String?      @unique
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
-  phoneNumber          String        @unique
+  phoneNumber          String       @unique
 
-  lastLoginIP          String?
-  accountStatus        AccountStatus @default(active)
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
-  employeeId           String?       @unique 
-  specialization       String?                
-  hireDate             DateTime?              
-  permissions          Permission[]          
-  
+  lastLoginIP    String?
+  accountStatus  AccountStatus @default(active)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  employeeId     String?       @unique
+  specialization String?
+  hireDate       DateTime?
+  permissions    Permission[]
 
   // Relations
   faculty           Faculty?           @relation(fields: [facultyId], references: [id])
@@ -175,16 +187,18 @@ model EmergencyContact {
 // ============== APPLICANT MODEL ==============
 
 model Applicant {
-  id          String    @id @default(cuid())
+  id          String      @id @default(cuid())
   name        String
-  email       String    @unique
-  phoneNumber String    @unique
+  email       String      @unique
+  phoneNumber String      @unique
   password    String
+  gender      Gender      @default(null)
   entryMode   EntryMode
-  studentId   String?   @unique
- 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  program     ProgramType @default(BSC)
+  studentId   String?     @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Application Details
   secondarySchoolName    String?
@@ -328,15 +342,16 @@ model Department {
 // ============== COURSE MODEL ==============
 
 model Course {
-  id             String   @id @default(cuid())
+  id             String      @id @default(cuid())
   title          String
-  code           String   @unique
+  code           String      @unique
   unit           Int
   level          Int
   semester       Semester
   departmentId   String?
   headLecturerId String?
   facultyId      String?
+  program        ProgramType @default(BSC)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

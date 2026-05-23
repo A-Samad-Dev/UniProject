@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { log } from "console";
 
 interface DashboardStats {
   totalStudents: number;
@@ -23,7 +24,7 @@ interface DashboardStats {
   totalDepartments: number;
   totalFaculties: number;
   pendingApplications: number;
-  activeCourses: number;
+  totalCourses: number;
 }
 
 export default function AdminDashboard() {
@@ -39,20 +40,26 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [students, lecturers, departments, faculties] = await Promise.all([
-        apiClient.getAllStudents(),
-        apiClient.getAllLecturers(),
-        apiClient.getAllDepartmentHeads(),
-        apiClient.getAllFacultyHeads(),
-      ]);
+      const [students, lecturers, departments, faculties, coursesRes, admissionStats] =
+        await Promise.all([
+          apiClient.getAllStudents(),
+          apiClient.getAllLecturers(),
+          apiClient.getAllDepartmentHeads(),
+          apiClient.getAllFacultyHeads(),
+          apiClient.getAllCourses(),
+          apiClient.getAdmissionStats(),
+        ]);
+        const pendingApplications = admissionStats.data?.stats?.find(
+      (s: any) => s._id === "submitted"
+    )?.count || 0;
 
       setStats({
         totalStudents: students.data?.length || 0,
         totalLecturers: lecturers.data?.length || 0,
         totalDepartments: departments.data?.length || 0,
         totalFaculties: faculties.data?.length || 0,
-        pendingApplications: 12, // You can fetch this from your API
-        activeCourses: 45,
+        pendingApplications: pendingApplications,
+        totalCourses: coursesRes.data.length || 0,
       });
     } catch (error: any) {
       toast.error(error.message || "Failed to load dashboard");
@@ -104,7 +111,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Active Courses",
-      value: stats?.activeCourses || 0,
+      value: stats?.totalCourses || 0,
       icon: BookOpen,
       color: "bg-indigo-500",
       change: "+8",

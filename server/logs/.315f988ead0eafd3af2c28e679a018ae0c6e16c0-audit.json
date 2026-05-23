@@ -19,6 +19,26 @@
             "date": 1779148455084,
             "name": "logs\\rejections-2026-05-19.log",
             "hash": "1d7fada0ccd16d9d3b8a32ac21da51f65e4515a47ceb99857f3b036c6eb3b6f6"
+        },
+        {
+            "date": 1779302882801,
+            "name": "logs\\rejections-2026-05-20.log",
+            "hash": "2e24ad99cc264190c8a97a1a58f0b3bcbb1bc6b55708d11961e73431d34dd5d6"
+        },
+        {
+            "date": 1779435155416,
+            "name": "logs\\rejections-2026-05-22.log",
+            "hash": "920cbad6825d1fea2ad6f3a0f71c5d025c90a3030469942079428b680106b07d"
+        },
+        {
+            "date": 1779509561589,
+            "name": "logs\\rejections-2026-05-23.log",
+            "hash": "5ec008d7dd52b85629602e632afdfbca6905fe9443d7e2d4da06b6e36b399124"
+        },
+        {
+            "date": 1779577234231,
+            "name": "logs\\rejections-2026-05-24.log",
+            "hash": "9d9aefb59d28e31bacffc59b9852e3efb74c17f9e3df9610bc9db383e3872c23"
         }
     ],
     "hashType": "sha256"

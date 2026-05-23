@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useSearchParams } from "next/navigation";
 import {
   Mail,
   Lock,
@@ -28,6 +29,8 @@ const LoginSchema = Yup.object().shape({
 export default function LoginPage() {
   const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const isRedirected = searchParams.get("redirected") === "true";
 
   const formik = useFormik({
     initialValues: {
@@ -73,9 +76,9 @@ export default function LoginPage() {
       icon: "📚",
     },
     {
-      role: "Admin",
-      email: "admin@university.edu",
-      password: "admin123",
+      role: "Super Admin",
+      email: "olokoadesola1@gmail.com",
+      password: "SuperAdmin@123456",
       icon: "⚙️",
     },
   ];
@@ -134,6 +137,11 @@ export default function LoginPage() {
 
         {/* Right Side - Login Form */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6! md:p-10!">
+          {isRedirected && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-700 rounded-md text-sm">
+              Security notice: You have been logged out due to inactivity.
+            </div>
+          )}
           {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center mb-8!">
             <div className="bg-linear-to-tr from-purple-600 to-pink-600 p-3! rounded-2xl">

@@ -109,11 +109,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const response = await apiClient.login(email, password);
-      console.log("Full login response:", response);
+      console.log("CRITICAL DEBUG - API Response:", response);
       const user = response.user;
       if (response.success && user) {
         setUser(user);
-        const dashboardRoute = getDashboardRoute(user.role);
+        const cleanRole = user.role.toLowerCase() as UserRole;
+        document.cookie = `userRole=${cleanRole}; path=/; max-age=86400; SameSite=Strict; Secure`;
+        const dashboardRoute = getDashboardRoute(cleanRole);
+
         window.location.href = dashboardRoute;
       } else {
         throw new Error(response.message || "Login failed");
@@ -208,7 +211,7 @@ function getDashboardRoute(role: UserRole): string {
     department_head: "/department-head/dashboard",
     lecturer: "/lecturer/dashboard",
     student: "/student/dashboard",
-    applicant: "/application",
+    applicant: "/applicant/dashboard",
   };
   return routes[role];
 }

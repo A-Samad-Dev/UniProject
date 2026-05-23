@@ -46,8 +46,11 @@ exports.verifyToken = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // remember to remove the default later on !
 
-    // Find user by ID and exclude password field
-    const user = await prisma.user.findUnique({
+    let foundAccount = null;
+    let fallbackToApplicant = false;
+
+    // 1. Try to load from primary unified User table
+    foundAccount = await prisma.user.findUnique({
       where: { id: decoded.id },
       select: {
         id: true,
@@ -64,26 +67,35 @@ exports.verifyToken = async (req, res, next) => {
         lastLoginIP: true,
         createdAt: true,
         updatedAt: true,
-        faculty: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-          },
-        },
-        department: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-          },
-        },
+        faculty: { select: { id: true, name: true, code: true } },
+        department: { select: { id: true, name: true, code: true } },
       },
     });
+    if (!foundAccount) {
+      foundAccount = await prisma.applicant.findUnique({
+        where: { id: decoded.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phoneNumber: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true,
+          faculty: { select: { id: true, name: true, code: true } },
+          department: { select: { id: true, name: true, code: true } },
+        },
+      });
 
-    if (!user) {
+      if (foundAccount) {
+        foundAccount.role = "applicant"; // Explicitly inject role string for authorization guards
+        fallbackToApplicant = true;
+      }
+    }
+
+    if (!foundAccount) {
       logger.warn("User not found for token", {
-        userId: decoded.userId,
+        userId: decoded.id,
         ip: req.ip,
       });
 
@@ -93,11 +105,11 @@ exports.verifyToken = async (req, res, next) => {
       });
     }
 
-    // Check if account is active (using accountStatus field)
-    if (user.accountStatus !== "active") {
+    // 4. Verify accountStatus constraint ONLY for core staff/students
+    if (!fallbackToApplicant && foundAccount.accountStatus !== "active") {
       logger.warn("Inactive account attempted access", {
-        userId: user.id,
-        status: user.accountStatus,
+        userId: foundAccount.id,
+        status: foundAccount.accountStatus,
         ip: req.ip,
       });
       return res.status(401).json({
@@ -106,11 +118,12 @@ exports.verifyToken = async (req, res, next) => {
       });
     }
 
-    // Attach user to request object
-    req.user = user;
+    // Attach account payload object context to request
+    req.user = foundAccount;
     req.prisma = prisma;
+
     logAction(
-      user.id,
+      foundAccount.id,
       "AUTH_SUCCESS",
       { method: req.method, url: req.url },
       req,

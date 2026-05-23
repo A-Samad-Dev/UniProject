@@ -1,13 +1,15 @@
 // routes/authRoutes.js
 const router = require("express").Router();
-const { 
-  login, 
+const {
+  login,
   register,
-  forgotPassword, 
-  resetPassword, 
+  forgotPassword,
+  resetPassword,
   changePassword,
   getMe,
-  logout
+  logout,
+  getPublicCourses,
+  getPublicDepartmentsWithPrograms,
 } = require("../controllers/authController");
 const { verifyToken } = require("../middlewares/auth");
 
@@ -20,5 +22,8 @@ router.post("/reset-password/:token", resetPassword);
 router.get("/me", verifyToken, getMe);
 router.post("/change-password", verifyToken, changePassword);
 router.post("/logout", verifyToken, logout);
+
+router.get("/public/courses", getPublicCourses);
+router.get("/public/departments", getPublicDepartmentsWithPrograms);
 
 module.exports = router;

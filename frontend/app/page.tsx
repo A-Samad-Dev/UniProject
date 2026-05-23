@@ -62,7 +62,7 @@ export default function LandingPage() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2 shrink-0">
               <GraduationCap className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-              <span className="text-lg sm:text-xl font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
+              <span className="text-lg sm:text-xl font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap font-poppins">
                 UniSystem
               </span>
             </Link>
@@ -77,7 +77,7 @@ export default function LandingPage() {
               </Link>
               <ThemeToggle />
               <button
-                onClick={() => router.push("/auth/login")}
+                onClick={() => router.push("/login")}
                 className="px-4! py-2! text-indigo-600 dark:text-indigo-400 border border-indigo-600 dark:border-indigo-400 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950 transition text-sm"
               >
                 Sign In
@@ -110,7 +110,7 @@ export default function LandingPage() {
             <div className="px-4! py-4! space-y-3!">
               <Link
                 href="#features"
-                className="block py-2! text-gray-700 dark:text-gray-300 hover:text-indigo-600"
+                className="block py-2! text-gray-700 dark:text-gray-300 hover:text-indigo-600 font-inter"
               >
                 Features
               </Link>

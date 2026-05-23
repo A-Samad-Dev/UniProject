@@ -1,7 +1,9 @@
+import toast from "react-hot-toast";
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
-const setCookie = (name: string, value: string, days = 7) => {
+const setCookie = (name: string, value: string, days = 1) => {
   if (typeof document === "undefined") return;
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
@@ -87,8 +89,8 @@ class ApiClient {
     };
 
     try {
+      console.log("Fetching URL:", url);
       const response = await fetch(url, config);
-      const data = await response.json();
 
       if (response.status === 401) {
         this.clearToken();
@@ -96,14 +98,27 @@ class ApiClient {
           typeof window !== "undefined" &&
           !window.location.pathname.includes("/login")
         ) {
-          window.location.href = "/login";
+          toast.error("Your session has expired. Please login again.", {
+            id: "session-expired",
+            duration: 4000,
+            icon: "🔒",
+          });
+
+          setTimeout(() => {
+            window.location.href = "/login?redirected=true";
+          }, 2000);
         }
-        throw new Error(data.message || "Session expired");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Session expired");
       }
 
       if (!response.ok) {
-        throw new Error(data.message || "Request failed");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || `Request failed with status ${response.status}`,
+        );
       }
+      const data = await response.json();
 
       return data;
     } catch (error: any) {
@@ -258,7 +273,7 @@ class ApiClient {
   }
 
   async getDepartmentCourses() {
-    return this.request("/admin/courses");
+    return this.request("/admin/department-courses");
   }
 
   async createCourse(courseData: any) {
@@ -304,7 +319,7 @@ class ApiClient {
 
   // Faculty Head endpoints
   async getFacultyDepartments() {
-    return this.request("/admin/departments");
+    return this.request("/admin/faculty-departments");
   }
 
   async getFacultyLecturers() {
@@ -345,13 +360,89 @@ class ApiClient {
   async getAllStudents() {
     return this.request("/admin/students");
   }
+  async getAllUsers() {
+    return this.request("/admin/users");
+  }
+
+  async getUserById(id: string) {
+    return this.request(`/users/${id}`);
+  }
+  async updateUser(id: string, data: any) {
+    return this.request(`/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+  async deleteUser(id: string) {
+    return this.request(`/users/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async updateUserStatus(id: string, status: string) {
+    return this.request(`/users/${id}/status`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+  }
 
   async getAllLecturers() {
     return this.request("/admin/lecturers");
   }
+  async getAllDepartments() {
+    return this.request("/admin/departments");
+  }
+
+  async getDepartmentById(id: string) {
+    return this.request(`/admin/departments/${id}`);
+  }
+
+  async updateDepartment(
+    id: string,
+    data: {
+      name: string;
+      code: string;
+      facultyId: string;
+      departmentHeadId?: string;
+    },
+  ) {
+    return this.request(`/admin/departments/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteDepartment(id: string) {
+    return this.request(`/admin/departments/${id}`, {
+      method: "DELETE",
+    });
+  }
 
   async getAllDepartmentHeads() {
     return this.request("/admin/department-heads");
+  }
+  async getAllFaculties() {
+    return this.request("/admin/faculties");
+  }
+
+  async getFacultyById(id: string) {
+    return this.request(`/admin/faculties/${id}`);
+  }
+
+  async updateFaculty(
+    id: string,
+    data: { name: string; code: string; facultyHeadId?: string },
+  ) {
+    return this.request(`/faculties/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteFaculty(id: string) {
+    return this.request(`/faculties/${id}`, {
+      method: "DELETE",
+    });
   }
 
   async getAllFacultyHeads() {
@@ -389,45 +480,107 @@ class ApiClient {
       body: JSON.stringify(adminData),
     });
   }
+  async getAllCourses(filters?: {
+    departmentId?: string;
+    level?: string;
+    semester?: string;
+    search?: string;
+    program?: string;
+  }) {
+    const params = new URLSearchParams();
 
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.set(key, value);
+      });
+    }
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    return this.request(`/admin/courses${queryString}`);
+  }
+  async getCourseById(id: string) {
+    return this.request(`/admin/courses/${id}`);
+  }
+
+  async getPublicCourses(filters?: { program?: string }) {
+    const params = new URLSearchParams();
+
+    if (filters?.program) {
+      params.set("program", filters.program);
+    }
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    return this.request(`/auth/public/courses${queryString}`);
+  }
   // Applicant endpoints
   async registerApplicant(applicantData: any) {
-    return this.request("/applicant/register", {
+    return this.request("/applicants/register", {
       method: "POST",
       body: JSON.stringify(applicantData),
     });
   }
 
+  async getPublicDepartments(program?: string) {
+    const query = program ? `?program=${program}` : "";
+    return this.request(`/auth/public/departments${query}`);
+  }
+
   async submitApplication(applicantId: string, applicationData: any) {
-    return this.request(`/applicant/submit-application/${applicantId}`, {
+    return this.request(`/applicants/submit-application/${applicantId}`, {
       method: "POST",
       body: JSON.stringify(applicationData),
     });
   }
 
   async getApplicationStatus(applicantId: string) {
-    return this.request(`/applicant/status/${applicantId}`);
+    return this.request(`/applicants/status/${applicantId}`);
   }
 
-  async getAllApplicants() {
-    return this.request("/applicant/admin/all");
+  async getAllApplicants(status?: string) {
+    const params = new URLSearchParams();
+    if (status) {
+      params.set("status", status);
+    }
+    return this.request(`/applicants/admin/all?${params.toString()}`);
   }
 
+  async getAdmissionStats() {
+    return this.request("/applicants/admin/stats");
+  }
+  async getApplicantById(id: string) {
+    return this.request(`/applicants/admin/${id}`);
+  }
+  async getApplicantByEmail(email: string) {
+    return this.request(`/applicants/admin/email/${email}`);
+  }
   async reviewApplication(
     applicantId: string,
-    reviewData: { status: string; rejectionReason?: string },
+    reviewData: {
+      status: string;
+      rejectionReason?: string;
+      decision: string;
+      remarks?: string;
+    },
   ) {
-    return this.request(`/applicant/admin/review/${applicantId}`, {
+    return this.request(`/applicants/admin/review/${applicantId}`, {
       method: "POST",
       body: JSON.stringify(reviewData),
     });
   }
-
-  async getAdmissionStats() {
-    return this.request("/applicant/admin/stats");
+  async updateApplication(applicantId: string, updateData: any) {
+    return this.request(`/applicants/admin/update/${applicantId}`, {
+      method: "PUT",
+      body: JSON.stringify(updateData),
+    });
   }
 
-  // Generic methods for custom endpoints
+  async getAllAdmins() {
+    return this.request("/admin/all-admins");
+  }
+
+  async getAdminById(id: string) {
+    return this.request(`/admin/admins/${id}`);
+  }
+
   async get(endpoint: string) {
     return this.request(endpoint);
   }
